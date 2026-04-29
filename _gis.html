@@ -863,6 +863,19 @@
     const CACHE_KEY = 'licenses_cache';
     const CACHE_DATE_KEY = 'licenses_cache_date';
     const CACHE_TTL = 24 * 60 * 60 * 1000;
+    
+    // Конфигурация производительности
+    const CONFIG = {
+        THREAD_CONCURRENCY: 5,
+        RATE_LIMIT_MS: 30,
+        PAGE_SIZE: 500,
+        MAX_CACHE_SIZE: 500,
+        CACHE_TTL_MS: 5 * 60 * 1000, // 5 минут
+        API_TIMEOUT_MS: 30000,
+        MAX_RETRIES: 3,
+        LOGS_MAX_LENGTH: 100
+    };
+    
     const ENTRY_TYPES = {
         'HOUSE_INCLUSION': { name: '🏠 Включение', badge: 'badge-inclusion' },
         'HOUSE_EXCLUSION': { name: '🚫 Исключение', badge: 'badge-exclusion' },
@@ -870,6 +883,19 @@
         'LICENSE_MANUAL_UPDATE': { name: '✏️ Ручное изм.', badge: 'badge-update' },
         'OTHER': { name: '📄 Прочее', badge: 'badge-other' }
     };
+    
+    // ========== БЕЗОПАСНОСТЬ: Экранирование HTML ==========
+    /**
+     * Экранирует HTML-специальные символы для защиты от XSS
+     * @param {string} text - Текст для экранирования
+     * @returns {string} Безопасный HTML
+     */
+    function escapeHtml(text) {
+        if (!text && text !== 0) return '—';
+        const div = document.createElement('div');
+        div.textContent = String(text);
+        return div.innerHTML;
+    }
     
     // ========== СОКРАЩЕНИЕ НАЗВАНИЙ УК ==========
     const orgTypeMapping = {
@@ -913,11 +939,17 @@
     let monitoringResults = [], allRegionChanges = [], logs = [], isRunning = false, isLicensesLoaded = false;
 
     function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+    
+    /**
+     * Добавление сообщения в лог
+     * @param {string} msg - Сообщение
+     * @param {'error'|'success'|'info'|'warning'} type - Тип сообщения
+     */
     function addLog(msg, type = 'info') {
         const time = new Date().toLocaleTimeString();
         const icons = { error: '❌', success: '✅', info: '📝', warning: '⚠️' };
         logs.unshift(`[${time}] ${icons[type]} ${msg}`);
-        if (logs.length > 100) logs.pop();
+        if (logs.length > CONFIG.LOGS_MAX_LENGTH) logs.pop();
         document.getElementById('logPanel').innerHTML = logs.join('<br>');
     }
     function updateStatus(text) { document.getElementById('globalStatus').textContent = text; }
@@ -996,15 +1028,30 @@
         }
     }
     
-    async function fetchViaProxy(url, options = {}) {
-        const proxyUrl = PROXY + encodeURIComponent(url);
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000);
-        try {
-            const res = await fetch(proxyUrl, { ...options, signal: controller.signal });
-            clearTimeout(timeout);
-            return res;
-        } catch(e) { clearTimeout(timeout); throw e; }
+    /**
+     * Выполнение HTTP-запроса через прокси с обработкой ошибок и повторными попытками
+     * @param {string} url - URL запроса
+     * @param {RequestInit} options - Опции fetch
+     * @param {number} [retries=CONFIG.MAX_RETRIES] - Количество попыток
+     * @returns {Promise<Response>}
+     */
+    async function fetchViaProxy(url, options = {}, retries = CONFIG.MAX_RETRIES) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                const proxyUrl = PROXY + encodeURIComponent(url);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), CONFIG.API_TIMEOUT_MS);
+                const res = await fetch(proxyUrl, { ...options, signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                return res;
+            } catch(e) {
+                console.warn(`Попытка ${i+1}/${retries} не удалась:`, e.message);
+                if (i === retries - 1) throw e;
+                // Экспоненциальная задержка между попытками
+                await delay(1000 * (i + 1));
+            }
+        }
     }
     function formatDate(date) { if(!date) return '—'; const d=new Date(date); return d.toLocaleDateString('ru-RU')+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}); }
     function parsePeriod(input) {
@@ -1163,14 +1210,50 @@
         });
     }
 
-    // ========== КЭШ ДЛЯ БЫСТРОЙ ПРОВЕРКИ ==========
+    // ========== КЭШ ДЛЯ БЫСТРОЙ ПРОВЕРКИ (LRU-кэш с TTL) ==========
     const quickCheckCache = new Map();
     
+    /**
+     * Получить значение из кэша с проверкой TTL
+     * @param {string} key - Ключ кэша
+     * @returns {*} Значение или null если не найдено/истекло
+     */
+    function getCached(key) {
+        const item = quickCheckCache.get(key);
+        if (!item) return null;
+        if (Date.now() - item.timestamp > CONFIG.CACHE_TTL_MS) {
+            quickCheckCache.delete(key);
+            return null;
+        }
+        return item.value;
+    }
+    
+    /**
+     * Сохранить значение в кэш с ограничением размера
+     * @param {string} key - Ключ кэша
+     * @param {*} value - Значение
+     */
+    function setCached(key, value) {
+        if (quickCheckCache.size >= CONFIG.MAX_CACHE_SIZE) {
+            const firstKey = quickCheckCache.keys().next().value;
+            quickCheckCache.delete(firstKey);
+        }
+        quickCheckCache.set(key, { value, timestamp: Date.now() });
+    }
+    
+    /**
+     * Быстрая проверка лицензии с кэшированием
+     * @param {string} guid - GUID лицензии
+     * @param {{start: Date, end: Date}} period - Период проверки
+     * @param {boolean} [forceRefresh=false] - Принудительное обновление
+     * @returns {Promise<{guid: string, needDetailedCheck: boolean, changes: Array}>}
+     */
     async function quickCheckWithCache(guid, period, forceRefresh = false) {
         const cacheKey = `${guid}_${period.start.getTime()}_${period.end.getTime()}`;
         
-        if (!forceRefresh && quickCheckCache.has(cacheKey)) {
-            return quickCheckCache.get(cacheKey);
+        if (!forceRefresh) {
+            const cached = getCached(cacheKey);
+            if (cached) return cached;
         }
         
         try {
@@ -1191,12 +1274,7 @@
                 changes: []
             };
             
-            quickCheckCache.set(cacheKey, result);
-            if (quickCheckCache.size > 1000) {
-                const firstKey = quickCheckCache.keys().next().value;
-                quickCheckCache.delete(firstKey);
-            }
-            
+            setCached(cacheKey, result);
             return result;
         } catch (e) {
             return {
@@ -1210,10 +1288,11 @@
             };
         }
     }
+
     
     // ========== УМНЫЙ ПУЛ ПОТОКОВ ==========
     class SmartThreadPool {
-        constructor(concurrency = 5, rateLimit = 30) {
+        constructor(concurrency = CONFIG.THREAD_CONCURRENCY, rateLimit = CONFIG.RATE_LIMIT_MS) {
             this.concurrency = concurrency;
             this.rateLimit = rateLimit;
             this.queue = [];
@@ -1480,10 +1559,10 @@
         const guidsToProcess = [...selectedGuids];
         const totalCount = guidsToProcess.length;
         
-        addLog(`🚀 Умный многопоточный мониторинг ${totalCount} лицензий (параллельно: 5 потоков)`, 'info');
+        addLog(`🚀 Умный многопоточный мониторинг ${totalCount} лицензий (параллельно: ${CONFIG.THREAD_CONCURRENCY} потоков)`, 'info');
         document.getElementById('progressLabel').textContent = 'Этап 1/2: Быстрая проверка (параллельно)...';
         
-        const threadPool = new SmartThreadPool(5, 30);
+        const threadPool = new SmartThreadPool();
         
         let completedQuick = 0;
         threadPool.onItemComplete = (completed, total) => {
@@ -1623,10 +1702,10 @@
                     <div class="detail-row">
                         <div class="detail-label">🏢 Управляющая компания</div>
                         <div class="detail-value">
-                            <strong>${change.licenseeName || '—'}</strong>
+                            <strong>${escapeHtml(change.licenseeName)}</strong>
                             <br><span style="font-size:13px;color:#64748b;">
-                                ИНН: ${change.inn || '—'} | Лицензия: ${change.licenseNumber || '—'}
-                                ${change.houseCount ? ` | 🏘️ Домов в управлении: ${change.houseCount}` : ''}
+                                ИНН: ${escapeHtml(change.inn)} | Лицензия: ${escapeHtml(change.licenseNumber)}
+                                ${change.houseCount ? ` | 🏘️ Домов в управлении: ${escapeHtml(change.houseCount)}` : ''}
                             </span>
                         </div>
                     </div>
@@ -1639,30 +1718,30 @@
                     ${change.entryNumber ? `
                     <div class="detail-row">
                         <div class="detail-label">🔢 Номер записи</div>
-                        <div class="detail-value">${change.entryNumber}</div>
+                        <div class="detail-value">${escapeHtml(change.entryNumber)}</div>
                     </div>
                     ` : ''}
                     
                     <div class="detail-row">
                         <div class="detail-label">🏷️ Тип события</div>
-                        <div class="detail-value"><span class="badge ${typeBadge}">${typeName}</span></div>
+                        <div class="detail-value"><span class="badge ${typeBadge}">${escapeHtml(typeName)}</span></div>
                     </div>
                     
                     <div class="detail-row">
                         <div class="detail-label">📍 Адрес объекта</div>
-                        <div class="detail-value">${change.formattedHouseAddress || '—'}</div>
+                        <div class="detail-value">${escapeHtml(change.formattedHouseAddress)}</div>
                     </div>
                     
                     <div class="detail-row">
                         <div class="detail-label">📄 Номер приказа</div>
-                        <div class="detail-value">${change.assuranceOrderNumber ? `№${change.assuranceOrderNumber}` : '—'} ${change.assuranceOrderDate ? `от ${formatDate(change.assuranceOrderDate)}` : ''}</div>
+                        <div class="detail-value">${change.assuranceOrderNumber ? `№${escapeHtml(change.assuranceOrderNumber)}` : '—'} ${change.assuranceOrderDate ? `от ${formatDate(change.assuranceOrderDate)}` : ''}</div>
                     </div>
                     
                     ${gisLink ? `
                     <div class="detail-row">
                         <div class="detail-label">🔗 Просмотр в ГИС ЖКХ</div>
                         <div class="detail-value">
-                            <a href="${gisLink}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none; font-weight: 600; border-bottom: 1px dashed #667eea;">
+                            <a href="${escapeHtml(gisLink)}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none; font-weight: 600; border-bottom: 1px dashed #667eea;">
                                 🔗 Открыть запись в ГИС ЖКХ ↗
                             </a>
                         </div>
@@ -1672,7 +1751,7 @@
                     ${change.description ? `
                     <div class="detail-row">
                         <div class="detail-label">📝 Описание</div>
-                        <div class="detail-value">${change.description}</div>
+                        <div class="detail-value">${escapeHtml(change.description)}</div>
                     </div>
                     ` : ''}
                 </div>
@@ -1704,15 +1783,15 @@
             const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${item.guid}/registry-entries`;
             const houseCount = item.houseCount || 0;
             html += `<tr>
-                        <td><a href="${licenseUrl}" target="_blank" rel="noopener noreferrer" class="license-link">🏢 ${item.licenseeName}</a></td>
-                        <td>${item.inn}</td>
-                        <td><a href="${licenseUrl}" target="_blank" class="license-link-small">${item.licenseNumber}</a></td>
-                        <td style="color:#475569; font-weight:600; text-align:center;">${houseCount}</td>
-                        <td style="color:#059669; text-align:center;">${item.incCount}</td>
-                        <td style="color:#dc2626; text-align:center;">${item.excCount}</td>
-                        <td style="color:#92400e; text-align:center;">${item.updCount}</td>
-                        <td style="color:#4338ca; text-align:center;">${item.othCount}</td>
-                        <td style="text-align:center;"><span class="badge" style="background:#e2e8f0;">${item.incCount + item.excCount + item.updCount + item.othCount}</span></td>
+                        <td><a href="${escapeHtml(licenseUrl)}" target="_blank" rel="noopener noreferrer" class="license-link">🏢 ${escapeHtml(item.licenseeName)}</a></td>
+                        <td>${escapeHtml(item.inn)}</td>
+                        <td><a href="${escapeHtml(licenseUrl)}" target="_blank" class="license-link-small">${escapeHtml(item.licenseNumber)}</a></td>
+                        <td style="color:#475569; font-weight:600; text-align:center;">${escapeHtml(houseCount)}</td>
+                        <td style="color:#059669; text-align:center;">${escapeHtml(item.incCount)}</td>
+                        <td style="color:#dc2626; text-align:center;">${escapeHtml(item.excCount)}</td>
+                        <td style="color:#92400e; text-align:center;">${escapeHtml(item.updCount)}</td>
+                        <td style="color:#4338ca; text-align:center;">${escapeHtml(item.othCount)}</td>
+                        <td style="text-align:center;"><span class="badge" style="background:#e2e8f0;">${escapeHtml(item.incCount + item.excCount + item.updCount + item.othCount)}</span></td>
                      </tr>`;
         });
         
@@ -1739,15 +1818,15 @@
         
         allRegionChanges.forEach((change, idx) => {
             const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${change.licenseGuid}/registry-entries`;
-            html += `<tr class="clickable-row" data-change-index="${idx}" data-entry-type="${change.entryType}">
+            html += `<tr class="clickable-row" data-change-index="${idx}" data-entry-type="${escapeHtml(change.entryType)}">
                         <td>${formatDate(change.publishDate)}</td>
                         <td>
-                            <a href="${licenseUrl}" target="_blank" rel="noopener noreferrer" class="license-link">${change.licenseeName}</a>
-                            <br><span style="font-size:12px;">${change.licenseNumber}</span>
+                            <a href="${escapeHtml(licenseUrl)}" target="_blank" rel="noopener noreferrer" class="license-link">${escapeHtml(change.licenseeName)}</a>
+                            <br><span style="font-size:12px;">${escapeHtml(change.licenseNumber)}</span>
                          </td>
-                        <td><span class="badge ${getEntryTypeBadge(change.entryType)}">${getEntryTypeName(change.entryType)}</span></td>
-                        <td class="address-cell">${change.formattedHouseAddress || '—'}</td>
-                        <td>${change.assuranceOrderNumber ? `№${change.assuranceOrderNumber}` : '—'}</td>
+                        <td><span class="badge ${getEntryTypeBadge(change.entryType)}">${escapeHtml(getEntryTypeName(change.entryType))}</span></td>
+                        <td class="address-cell">${escapeHtml(change.formattedHouseAddress)}</td>
+                        <td>${change.assuranceOrderNumber ? `№${escapeHtml(change.assuranceOrderNumber)}` : '—'}</td>
                       </tr>`;
         });
         
