@@ -1365,6 +1365,17 @@
         div.textContent = String(text);
         return div.innerHTML;
     }
+
+    /**
+     * Экранирование полей для CSV (двойные кавычки и переносы строк)
+     * @param {string} text - Текст для экранирования
+     * @returns {string} Безопасное CSV-поле
+     */
+    function escapeCsvField(text) {
+        if (typeof text !== 'string') return text;
+        // Экранируем двойные кавычки удвоением и оборачиваем в кавычки
+        return '"' + text.replace(/"/g, '""') + '"';
+    }
     
     // ========== СОКРАЩЕНИЕ НАЗВАНИЙ УК ==========
     const orgTypeMapping = {
@@ -2335,7 +2346,9 @@
     };
     
     function exportLicensesToCSV() {
-        let csv = 'guid,number,status,uk_name,inn\n' + filteredLicenses.map(l => `"${l.guid}","${l.number}","${l.status}","${l.ukName}","${l.inn}"`).join('\n');
+        let csv = 'guid,number,status,uk_name,inn\n' + filteredLicenses.map(l => 
+            `${escapeCsvField(l.guid)},${escapeCsvField(l.number)},${escapeCsvField(l.status)},${escapeCsvField(l.ukName)},${escapeCsvField(l.inn)}`
+        ).join('\n');
         const blob = new Blob(['\ufeff' + csv], { type: 'text/csv' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
@@ -2372,7 +2385,7 @@
         if (allRegionChanges.length === 0) return;
         let csv = 'Дата,УК,ИНН,Лицензия,Тип,Адрес,Приказ\n';
         allRegionChanges.forEach(c => {
-            csv += `"${formatDate(c.publishDate)}","${c.licenseeName}","${c.inn}","${c.licenseNumber}","${getEntryTypeName(c.entryType)}","${c.formattedHouseAddress || ''}","${c.assuranceOrderNumber || ''}"\n`;
+            csv += `${escapeCsvField(formatDate(c.publishDate))},${escapeCsvField(c.licenseeName)},${escapeCsvField(c.inn)},${escapeCsvField(c.licenseNumber)},${escapeCsvField(getEntryTypeName(c.entryType))},${escapeCsvField(c.formattedHouseAddress || '')},${escapeCsvField(c.assuranceOrderNumber || '')}\n`;
         });
         const blob = new Blob(['\ufeff' + csv], { type: 'text/csv' });
         const a = document.createElement('a');
