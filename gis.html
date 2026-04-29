@@ -675,315 +675,6 @@
             border-radius: 20px;
             color: #475569;
         }
-        
-        /* Новые стили для улучшенной панели управления */
-        .control-row-top {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-        }
-        
-        .action-buttons-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-        }
-        
-        /* Умные быстрые фильтры (чипсы) */
-        .quick-filters {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        
-        .filter-chip {
-            padding: 6px 12px;
-            font-size: 12px;
-            background: white;
-            color: #64748b;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 20px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .filter-chip:hover {
-            background: #f1f5f9;
-            border-color: #94a3b8;
-            transform: translateY(-1px);
-        }
-        
-        .filter-chip.active {
-            background: #fef3c7;
-            color: #b45309;
-            border-color: #f59e0b;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
-        }
-        
-        .filter-chip[data-filter="risk"].active {
-            background: #fee2e2;
-            color: #dc2626;
-            border-color: #ef4444;
-            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
-        }
-        
-        .filter-chip[data-filter="orphans"].active {
-            background: #e0e7ff;
-            color: #4f46e5;
-            border-color: #6366f1;
-            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
-        }
-        
-        .filter-chip[data-filter="churn"].active {
-            background: #fce7f3;
-            color: #db2777;
-            border-color: #ec4899;
-            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.2);
-        }
-        
-        /* Селектор режима просмотра */
-        .view-select {
-            padding: 8px 12px;
-            font-size: 13px;
-            background: white;
-            color: #475569;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-        
-        .view-select:hover {
-            border-color: #667eea;
-        }
-        
-        .view-select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        /* Стили для карточек изменений (мобильный режим) */
-        .cards-container {
-            display: grid;
-            gap: 16px;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        }
-        
-        .change-card {
-            background: white;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .change-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        
-        .change-card.recent-change {
-            border-color: #f59e0b;
-            background: #fffbeb;
-        }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 16px;
-            background: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .card-date {
-            font-size: 13px;
-            color: #64748b;
-            font-weight: 500;
-        }
-        
-        .recent-badge {
-            background: #ef4444;
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-weight: 700;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        .card-body {
-            padding: 16px;
-        }
-        
-        .card-row {
-            margin-bottom: 10px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        
-        .card-row:last-child {
-            margin-bottom: 0;
-        }
-        
-        .card-row strong {
-            color: #475569;
-            display: inline-block;
-            min-width: 80px;
-        }
-        
-        .card-footer {
-            padding: 12px 16px;
-            background: #f8fafc;
-            border-top: 1px solid #e2e8f0;
-            text-align: right;
-        }
-        
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-        
-        /* Стили для режима аналитики */
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .analytics-card {
-            background: white;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            padding: 16px;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .analytics-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        
-        .analytics-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .analytics-uk-name {
-            font-weight: 600;
-            color: #1e293b;
-            text-decoration: none;
-            font-size: 14px;
-            flex: 1;
-        }
-        
-        .analytics-uk-name:hover {
-            color: #667eea;
-        }
-        
-        .trend-indicator {
-            font-size: 20px;
-            padding: 4px 8px;
-            border-radius: 8px;
-        }
-        
-        .trend-up {
-            background: #d1fae5;
-            color: #059669;
-        }
-        
-        .trend-down {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-        
-        .trend-stable {
-            background: #f1f5f9;
-            color: #64748b;
-        }
-        
-        .analytics-stats {
-            display: grid;
-            gap: 8px;
-        }
-        
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            padding: 4px 0;
-        }
-        
-        .stat-row.highlight {
-            background: #fef3c7;
-            padding: 6px 8px;
-            border-radius: 8px;
-            margin-top: 4px;
-        }
-        
-        .stat-positive {
-            color: #059669;
-            font-weight: 600;
-        }
-        
-        .stat-negative {
-            color: #dc2626;
-            font-weight: 600;
-        }
-        
-        .stat-warning {
-            color: #b45309;
-            font-weight: 600;
-        }
-        
-        .analytics-footer {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #e2e8f0;
-            font-size: 12px;
-            color: #64748b;
-        }
-        
-        .inn-label {
-            font-family: monospace;
-            background: #f1f5f9;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        
-        /* Подсветка недавних изменений в таблице */
-        tr.recent-change {
-            background: linear-gradient(90deg, #fffbeb 0%, white 100%);
-        }
-        
-        tr.recent-change:hover {
-            background: #fef3c7;
-        }
     
         .progress-container {
             margin: 16px 0;
@@ -1579,50 +1270,34 @@
     </div>
 
     <div class="control-panel">
-        <div class="control-row-top">
-            <div class="period-input-wrapper">
-                <label>📅 Период:</label>
-                <input type="text" id="periodInput" placeholder="7d / 2w / 1m / 2026-01-01:2026-03-01" value="7d">
-            </div>
-            <div class="period-hint">ⓘ 7d · 2w · 1m · диапазон</div>
-            
-            <!-- Умные быстрые фильтры -->
-            <div class="quick-filters">
-                <button class="filter-chip" data-filter="risk" title="Дома со сменой УК < 60 дней">⚠️ Риски</button>
-                <button class="filter-chip" data-filter="orphans" title="Дома без активной лицензии">🏚️ Сироты</button>
-                <button class="filter-chip" data-filter="churn" title="Частая смена УК (>2 раз)">🔄 Частая смена</button>
-            </div>
+        <div class="period-input-wrapper">
+            <label>📅 Период:</label>
+            <input type="text" id="periodInput" placeholder="7d / 2w / 1m / 2026-01-01:2026-03-01" value="7d">
         </div>
+        <div class="period-hint">ⓘ 7d · 2w · 1m · диапазон</div>
         
         <div class="status-filters" id="statusFilters"></div>
         
         <!-- Новый выпадающий список с поиском -->
         <div class="search-select-wrapper" id="searchSelectWrapper">
             <div class="search-select-input" id="searchSelectInput">
-                🔍 Выбрать УК или лицензию (поиск по названию, ИНН, адресу)...
+                🔍 Выбрать УК или лицензию...
             </div>
             <div class="search-select-dropdown" id="searchSelectDropdown">
                 <div class="search-select-search">
-                    <input type="text" id="searchSelectSearch" placeholder="Начните вводить название, ИНН или адрес..." autocomplete="off">
+                    <input type="text" id="searchSelectSearch" placeholder="Поиск по названию, ИНН или номеру лицензии..." autocomplete="off">
                 </div>
                 <div id="searchSelectOptions"></div>
             </div>
         </div>
         
-        <div class="action-buttons-row">
-            <span class="selected-info" id="selectedInfo">Выбрано: 0</span>
-            <button class="btn btn-primary" id="startBtn" onclick="startMonitoring()" disabled>🚀 Запустить</button>
-            <button class="btn btn-outline" onclick="document.getElementById('csvUpload').click()">📥 CSV</button>
-            <input type="file" id="csvUpload" accept=".csv" style="display:none" onchange="importLicensesFromCSV(event)">
-            <button class="btn btn-outline" onclick="exportLicensesToCSV()">📤 GUID</button>
-            <button class="btn btn-success" id="exportBtn" onclick="exportResults()" disabled>📊 Экспорт</button>
-            <button class="btn btn-outline" onclick="forceReloadLicenses()">🔄 Реестр</button>
-            <select id="viewMode" class="view-select" title="Режим отображения">
-                <option value="table">📋 Таблица</option>
-                <option value="cards">🃏 Карточки</option>
-                <option value="analytics">📊 Аналитика</option>
-            </select>
-        </div>
+        <span class="selected-info" id="selectedInfo">Выбрано: 0</span>
+        <button class="btn btn-primary" id="startBtn" onclick="startMonitoring()" disabled>🚀 Запустить</button>
+        <button class="btn-outline" onclick="document.getElementById('csvUpload').click()">📥 CSV</button>
+        <input type="file" id="csvUpload" accept=".csv" style="display:none" onchange="importLicensesFromCSV(event)">
+        <button class="btn-outline" onclick="exportLicensesToCSV()">📤 GUID</button>
+        <button class="btn btn-success" id="exportBtn" onclick="exportResults()" disabled>📊 Экспорт</button>
+        <button class="btn-outline" onclick="forceReloadLicenses()">🔄 Обновить реестр</button>
     </div>
 
     <div class="stats-grid" id="statsPanel" style="display: none;">
@@ -1973,10 +1648,7 @@
         dropdown.classList.remove('show');
     }
     
-    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ ФИЛЬТРОВ ==========
-    let activeQuickFilters = new Set(); // risk, orphans, churn
-    
-    // Инициализация выпадающего списка и новых элементов управления
+    // Инициализация выпадающего списка
     function initSearchSelect() {
         const wrapper = document.getElementById('searchSelectWrapper');
         const input = document.getElementById('searchSelectInput');
@@ -1992,22 +1664,6 @@
             renderSearchSelectOptions(e.target.value);
         });
         
-        // Обработчик для селектора режима просмотра
-        const viewModeSelect = document.getElementById('viewMode');
-        if (viewModeSelect) {
-            viewModeSelect.addEventListener('change', (e) => {
-                applyViewMode(e.target.value);
-            });
-        }
-        
-        // Обработчики для быстрых фильтров-чипсов
-        document.querySelectorAll('.filter-chip').forEach(chip => {
-            chip.addEventListener('click', (e) => {
-                const filterType = chip.dataset.filter;
-                toggleQuickFilter(filterType);
-            });
-        });
-        
         // Закрываем при клике вне
         document.addEventListener('click', (e) => {
             if (!wrapper.contains(e.target)) {
@@ -2021,52 +1677,6 @@
                 closeSearchDropdown();
             }
         });
-    }
-    
-    // Переключение быстрого фильтра
-    function toggleQuickFilter(filterType) {
-        const chip = document.querySelector(`.filter-chip[data-filter="${filterType}"]`);
-        if (!chip) return;
-        
-        if (activeQuickFilters.has(filterType)) {
-            activeQuickFilters.delete(filterType);
-            chip.classList.remove('active');
-        } else {
-            activeQuickFilters.add(filterType);
-            chip.classList.add('active');
-        }
-        
-        // Перерисовываем результаты с примененными фильтрами
-        if (monitoringResults.length > 0 || allRegionChanges.length > 0) {
-            displayResults(monitoringResults);
-        }
-        
-        addLog(`${activeQuickFilters.has(filterType) ? '✅ Включен' : '❌ Выключен'} фильтр: ${getFilterLabel(filterType)}`, 'info');
-    }
-    
-    function getFilterLabel(type) {
-        const labels = {
-            'risk': '⚠️ Риски (смена УК < 60 дней)',
-            'orphans': '🏚️ Сироты (нет лицензии)',
-            'churn': '🔄 Частая смена (>2 раз)'
-        };
-        return labels[type] || type;
-    }
-    
-    // Применение режима просмотра
-    function applyViewMode(mode) {
-        const resultsContainer = document.getElementById('resultsArea');
-        if (!resultsContainer) return;
-        
-        // Сохраняем режим в localStorage
-        localStorage.setItem('viewMode', mode);
-        
-        // Перерисовываем результаты в новом режиме
-        if (monitoringResults.length > 0 || allRegionChanges.length > 0) {
-            displayResults(monitoringResults);
-        }
-        
-        addLog(`📐 Режим просмотра: ${mode === 'table' ? 'Таблица' : mode === 'cards' ? 'Карточки' : 'Аналитика'}`, 'info');
     }
 
     // ========== КЭШ ДЛЯ БЫСТРОЙ ПРОВЕРКИ (LRU-кэш с TTL) ==========
@@ -2625,79 +2235,12 @@
     
     function displayResults(processedData) {
         const container = document.getElementById('resultsArea');
-        const viewMode = localStorage.getItem('viewMode') || 'table';
-        
-        // Применяем быстрые фильтры к данным
-        let filteredChanges = applyQuickFilters(allRegionChanges);
-        
-        if ((!processedData || processedData.length === 0) && filteredChanges.length === 0) {
+        if (!processedData || processedData.length === 0) {
             container.innerHTML = `<div class="empty-state">✅ За выбранный период изменений не обнаружено</div>`;
             return;
         }
         
-        // Определяем режим отображения
-        if (viewMode === 'cards') {
-            displayResultsCards(processedData, filteredChanges);
-        } else if (viewMode === 'analytics') {
-            displayResultsAnalytics(processedData, filteredChanges);
-        } else {
-            displayResultsTable(processedData, filteredChanges);
-        }
-    }
-    
-    // Применение быстрых фильтров
-    function applyQuickFilters(changes) {
-        if (activeQuickFilters.size === 0) return changes;
-        
-        const now = new Date();
-        const riskThreshold = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000); // 60 дней
-        
-        // Группируем изменения по домам для анализа
-        const houseChanges = new Map();
-        changes.forEach(change => {
-            const key = change.houseGuid || change.formattedHouseAddress;
-            if (!houseChanges.has(key)) {
-                houseChanges.set(key, []);
-            }
-            houseChanges.get(key).push(change);
-        });
-        
-        // Фильтруем согласно активным фильтрам
-        return changes.filter(change => {
-            const publishDate = new Date(change.publishDate);
-            const houseKey = change.houseGuid || change.formattedHouseAddress;
-            const houseHistory = houseChanges.get(houseKey) || [];
-            
-            // ⚠️ Риски: смена УК менее 60 дней назад
-            if (activeQuickFilters.has('risk') && publishDate >= riskThreshold) {
-                return true;
-            }
-            
-            // 🏚️ Сироты: дома без активной лицензии (исключения без последующих включений)
-            if (activeQuickFilters.has('orphans')) {
-                const isExclusion = change.entryType === 'HOUSE_EXCLUSION';
-                const hasLaterInclusion = houseHistory.some(h => 
-                    h.entryType === 'HOUSE_INCLUSION' && new Date(h.publishDate) > publishDate
-                );
-                if (isExclusion && !hasLaterInclusion) {
-                    return true;
-                }
-            }
-            
-            // 🔄 Частая смена: более 2 изменений по дому
-            if (activeQuickFilters.has('churn') && houseHistory.length > 2) {
-                return true;
-            }
-            
-            return false;
-        });
-    }
-    
-    // Отображение в режиме таблицы (классическое)
-    function displayResultsTable(processedData, filteredChanges) {
-        const container = document.getElementById('resultsArea');
-        
-        let html = `<div class="section-title">🏢 УК с изменениями (${processedData?.length || 0})</div>
+        let html = `<div class="section-title">🏢 УК с изменениями (${processedData.length})</div>
                     <div class="table-wrapper">
                     <table class="uk-table">
                     <thead>
@@ -2705,28 +2248,26 @@
                     </thead>
                     <tbody>`;
         
-        if (processedData && processedData.length > 0) {
-            processedData.forEach(item => {
-                const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${encodeURIComponent(item.guid)}/registry-entries`;
-                const houseCount = item.houseCount || 0;
-                html += `<tr>
-                            <td data-label="УК"><a href="${escapeHtml(licenseUrl)}" target="_blank" rel="noopener noreferrer" class="license-link">🏢 ${escapeHtml(item.licenseeName)}</a></td>
-                            <td data-label="ИНН">${escapeHtml(item.inn)}</td>
-                            <td data-label="Лицензия"><a href="${escapeHtml(licenseUrl)}" target="_blank" class="license-link-small">${escapeHtml(item.licenseNumber)}</a></td>
-                            <td data-label="Домов" style="color:#475569; font-weight:600; text-align:center;">${escapeHtml(houseCount)}</td>
-                            <td data-label="Включено" style="color:#059669; text-align:center;">${escapeHtml(item.incCount)}</td>
-                            <td data-label="Исключено" style="color:#dc2626; text-align:center;">${escapeHtml(item.excCount)}</td>
-                            <td data-label="Изменено" style="color:#92400e; text-align:center;">${escapeHtml(item.updCount)}</td>
-                            <td data-label="Прочее" style="color:#4338ca; text-align:center;">${escapeHtml(item.othCount)}</td>
-                            <td data-label="Всего" style="text-align:center;"><span class="badge" style="background:#e2e8f0;">${escapeHtml(item.incCount + item.excCount + item.updCount + item.othCount)}</span></td>
-                         </tr>`;
-            });
-        }
+        processedData.forEach(item => {
+            const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${encodeURIComponent(item.guid)}/registry-entries`;
+            const houseCount = item.houseCount || 0;
+            html += `<tr>
+                        <td data-label="УК"><a href="${escapeHtml(licenseUrl)}" target="_blank" rel="noopener noreferrer" class="license-link">🏢 ${escapeHtml(item.licenseeName)}</a></td>
+                        <td data-label="ИНН">${escapeHtml(item.inn)}</td>
+                        <td data-label="Лицензия"><a href="${escapeHtml(licenseUrl)}" target="_blank" class="license-link-small">${escapeHtml(item.licenseNumber)}</a></td>
+                        <td data-label="Домов" style="color:#475569; font-weight:600; text-align:center;">${escapeHtml(houseCount)}</td>
+                        <td data-label="Включено" style="color:#059669; text-align:center;">${escapeHtml(item.incCount)}</td>
+                        <td data-label="Исключено" style="color:#dc2626; text-align:center;">${escapeHtml(item.excCount)}</td>
+                        <td data-label="Изменено" style="color:#92400e; text-align:center;">${escapeHtml(item.updCount)}</td>
+                        <td data-label="Прочее" style="color:#4338ca; text-align:center;">${escapeHtml(item.othCount)}</td>
+                        <td data-label="Всего" style="text-align:center;"><span class="badge" style="background:#e2e8f0;">${escapeHtml(item.incCount + item.excCount + item.updCount + item.othCount)}</span></td>
+                     </tr>`;
+        });
         
         html += `</tbody>
                  </table>
                 </div>
-                <div class="section-title">📋 Все записи (${filteredChanges.length})</div>
+                <div class="section-title">📋 Все записи (${allRegionChanges.length})</div>
                 <div style="display:flex; flex-wrap:wrap; gap:10px; margin:16px 0;">
                     <input type="text" id="changesFilter" placeholder="🔍 Фильтр по адресу или УК..." style="flex:1; padding:10px; border-radius:12px; border:1px solid #e2e8f0;" onkeyup="filterChanges()">
                     <select id="typeFilter" onchange="filterChanges()" style="padding:10px; border-radius:12px;">
@@ -2744,13 +2285,10 @@
                 </thead>
                 <tbody>`;
         
-        filteredChanges.forEach((change, idx) => {
-            const originalIdx = allRegionChanges.indexOf(change);
+        allRegionChanges.forEach((change, idx) => {
             const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${encodeURIComponent(change.licenseGuid)}/registry-entries`;
-            const daysSinceChange = Math.floor((new Date() - new Date(change.publishDate)) / (1000 * 60 * 60 * 24));
-            const isRecent = daysSinceChange < 60;
-            html += `<tr class="clickable-row ${isRecent ? 'recent-change' : ''}" data-change-index="${originalIdx}" data-entry-type="${escapeHtml(change.entryType)}">
-                        <td data-label="Дата">${formatDate(change.publishDate)}${isRecent ? '<span class="recent-badge">NEW</span>' : ''}</td>
+            html += `<tr class="clickable-row" data-change-index="${idx}" data-entry-type="${escapeHtml(change.entryType)}">
+                        <td data-label="Дата">${formatDate(change.publishDate)}</td>
                         <td data-label="УК / Лицензия">
                             <a href="${escapeHtml(licenseUrl)}" target="_blank" rel="noopener noreferrer" class="license-link">${escapeHtml(change.licenseeName)}</a>
                             <br><span style="font-size:12px;">${escapeHtml(change.licenseNumber)}</span>
@@ -2775,171 +2313,6 @@
             });
         });
     }
-    
-    // Отображение в режиме карточек (для мобильных)
-    function displayResultsCards(processedData, filteredChanges) {
-        const container = document.getElementById('resultsArea');
-        
-        let html = `<div class="section-title">📋 Изменения (${filteredChanges.length})</div>
-                    <div class="cards-container">`;
-        
-        filteredChanges.forEach((change, idx) => {
-            const originalIdx = allRegionChanges.indexOf(change);
-            const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${encodeURIComponent(change.licenseGuid)}/registry-entries`;
-            const daysSinceChange = Math.floor((new Date() - new Date(change.publishDate)) / (1000 * 60 * 60 * 24));
-            const isRecent = daysSinceChange < 60;
-            
-            html += `<div class="change-card ${isRecent ? 'recent-change' : ''}" data-change-index="${originalIdx}">
-                        <div class="card-header">
-                            <span class="card-date">${formatDate(change.publishDate)}</span>
-                            ${isRecent ? '<span class="recent-badge">NEW</span>' : ''}
-                            <span class="badge ${getEntryTypeBadge(change.entryType)}">${escapeHtml(getEntryTypeName(change.entryType))}</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-row">
-                                <strong>🏢 УК:</strong>
-                                <a href="${escapeHtml(licenseUrl)}" target="_blank" class="license-link">${escapeHtml(change.licenseeName)}</a>
-                            </div>
-                            <div class="card-row">
-                                <strong>📄 Лицензия:</strong> ${escapeHtml(change.licenseNumber)}
-                            </div>
-                            <div class="card-row">
-                                <strong>📍 Адрес:</strong> ${escapeHtml(change.formattedHouseAddress)}
-                            </div>
-                            ${change.assuranceOrderNumber ? `
-                            <div class="card-row">
-                                <strong>📑 Приказ:</strong> №${escapeHtml(change.assuranceOrderNumber)}
-                            </div>` : ''}
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-sm" onclick="showChangeModalFromCard(${originalIdx})">ℹ️ Подробнее</button>
-                        </div>
-                     </div>`;
-        });
-        
-        html += `</div>`;
-        container.innerHTML = html;
-    }
-    
-    // Отображение в режиме аналитики
-    function displayResultsAnalytics(processedData, filteredChanges) {
-        const container = document.getElementById('resultsArea');
-        
-        // Агрегируем данные по УК
-        const ukStats = new Map();
-        filteredChanges.forEach(change => {
-            const key = change.licenseGuid;
-            if (!ukStats.has(key)) {
-                ukStats.set(key, {
-                    name: change.licenseeName,
-                    inn: change.inn,
-                    number: change.licenseNumber,
-                    guid: change.licenseGuid,
-                    total: 0,
-                    inclusions: 0,
-                    exclusions: 0,
-                    updates: 0,
-                    others: 0,
-                    recentChanges: 0
-                });
-            }
-            const stat = ukStats.get(key);
-            stat.total++;
-            if (change.entryType === 'HOUSE_INCLUSION') stat.inclusions++;
-            else if (change.entryType === 'HOUSE_EXCLUSION') stat.exclusions++;
-            else if (change.entryType === 'LICENSE_UPDATE') stat.updates++;
-            else stat.others++;
-            
-            const daysSince = Math.floor((new Date() - new Date(change.publishDate)) / (1000 * 60 * 60 * 24));
-            if (daysSince < 60) stat.recentChanges++;
-        });
-        
-        // Сортируем по количеству изменений
-        const sortedUks = Array.from(ukStats.values()).sort((a, b) => b.total - a.total);
-        
-        let html = `<div class="section-title">📊 Аналитика по УК (${sortedUks.length})</div>
-                    <div class="analytics-grid">`;
-        
-        sortedUks.forEach(uk => {
-            const trendClass = uk.inclusions > uk.exclusions ? 'trend-up' : uk.inclusions < uk.exclusions ? 'trend-down' : 'trend-stable';
-            const trendIcon = uk.inclusions > uk.exclusions ? '↗️' : uk.inclusions < uk.exclusions ? '↘️' : '➡️';
-            const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${encodeURIComponent(uk.guid)}/registry-entries`;
-            
-            html += `<div class="analytics-card">
-                        <div class="analytics-header">
-                            <a href="${escapeHtml(licenseUrl)}" target="_blank" class="analytics-uk-name">${escapeHtml(uk.name)}</a>
-                            <span class="trend-indicator ${trendClass}" title="Тренд: ${trendIcon}">${trendIcon}</span>
-                        </div>
-                        <div class="analytics-stats">
-                            <div class="stat-row">
-                                <span>🏘️ Всего:</span>
-                                <strong>${uk.total}</strong>
-                            </div>
-                            <div class="stat-row">
-                                <span>🏠 Включено:</span>
-                                <span class="stat-positive">+${uk.inclusions}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span>🚫 Исключено:</span>
-                                <span class="stat-negative">-${uk.exclusions}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span>📝 Изменено:</span>
-                                <span>${uk.updates}</span>
-                            </div>
-                            ${uk.recentChanges > 0 ? `
-                            <div class="stat-row highlight">
-                                <span>⚠️ За 60 дней:</span>
-                                <span class="stat-warning">${uk.recentChanges}</span>
-                            </div>` : ''}
-                        </div>
-                        <div class="analytics-footer">
-                            <span class="inn-label">ИНН: ${escapeHtml(uk.inn)}</span>
-                        </div>
-                     </div>`;
-        });
-        
-        html += `</div>
-                 <div class="section-title">📋 Детальные записи (${filteredChanges.length})</div>
-                 <div class="table-wrapper">
-                 <table id="changesTable" class="changes-table">
-                 <thead>
-                 <tr><th>Дата</th><th>УК / Лицензия</th><th>Тип</th><th>Адрес</th><th>Приказ</th></tr>
-                 </thead>
-                 <tbody>`;
-        
-        filteredChanges.slice(0, 50).forEach((change, idx) => { // Показываем только первые 50
-            const originalIdx = allRegionChanges.indexOf(change);
-            const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${encodeURIComponent(change.licenseGuid)}/registry-entries`;
-            html += `<tr class="clickable-row" data-change-index="${originalIdx}" data-entry-type="${escapeHtml(change.entryType)}">
-                        <td data-label="Дата">${formatDate(change.publishDate)}</td>
-                        <td data-label="УК / Лицензия">
-                            <a href="${escapeHtml(licenseUrl)}" target="_blank" rel="noopener noreferrer" class="license-link">${escapeHtml(change.licenseeName)}</a>
-                            <br><span style="font-size:12px;">${escapeHtml(change.licenseNumber)}</span>
-                         </td>
-                        <td data-label="Тип"><span class="badge ${getEntryTypeBadge(change.entryType)}">${escapeHtml(getEntryTypeName(change.entryType))}</span></td>
-                        <td data-label="Адрес" class="address-cell">${escapeHtml(change.formattedHouseAddress)}</td>
-                        <td data-label="Приказ">${change.assuranceOrderNumber ? `№${escapeHtml(change.assuranceOrderNumber)}` : '—'}</td>
-                      </tr>`;
-        });
-        
-        if (filteredChanges.length > 50) {
-            html += `<tr><td colspan="5" style="text-align:center; color:#64748b;">... и ещё ${filteredChanges.length - 50} записей. Переключитесь в режим "Таблица" для полного просмотра.</td></tr>`;
-        }
-        
-        html += `</tbody>
-                 </table>
-                </div>`;
-        
-        container.innerHTML = html;
-    }
-    
-    // Показать модальное окно из карточки
-    window.showChangeModalFromCard = function(idx) {
-        if (allRegionChanges[idx]) {
-            showChangeModal(allRegionChanges[idx]);
-        }
-    };
     
     window.filterChanges = function() {
         const filterText = document.getElementById('changesFilter')?.value.toLowerCase() || '';
