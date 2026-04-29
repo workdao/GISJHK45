@@ -797,13 +797,18 @@
             }
         }
 
-        /* Карточный вид для таблиц на мобильных */
+        /* Карточный вид для таблиц на мобильных - ОПТИМИЗИРОВАННО */
         @media (max-width: 640px) {
+            .table-wrapper {
+                overflow-x: visible;
+                padding: 0;
+            }
+            
             .license-table,
             .changes-table,
             .uk-table {
                 display: block;
-                overflow-x: visible;
+                min-width: auto;
             }
             
             .license-table thead,
@@ -823,11 +828,13 @@
             .uk-table tr {
                 display: block;
                 background: #ffffff;
-                border: 2px solid #e2e8f0;
-                border-radius: 16px;
-                padding: 16px;
-                margin-bottom: 16px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 12px;
+                margin-bottom: 12px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                word-wrap: break-word;
+                overflow-wrap: break-word;
             }
             
             .license-table td,
@@ -835,16 +842,19 @@
             .uk-table td {
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
-                padding: 10px 0;
+                align-items: flex-start;
+                padding: 8px 0;
                 border-bottom: 1px solid #f1f5f9;
                 text-align: right;
+                gap: 12px;
+                max-width: 100%;
             }
             
             .license-table td:last-child,
             .changes-table td:last-child,
             .uk-table td:last-child {
                 border-bottom: none;
+                padding-bottom: 0;
             }
             
             .license-table td::before,
@@ -854,47 +864,123 @@
                 font-weight: 600;
                 color: #64748b;
                 text-align: left;
-                margin-right: 16px;
                 flex-shrink: 0;
+                min-width: 100px;
+                max-width: 40%;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
+            }
+            
+            /* Контейнер для значения ячейки */
+            .license-table td > *,
+            .changes-table td > *,
+            .uk-table td > * {
+                max-width: 60%;
+                text-align: right;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
+            }
+            
+            /* Ссылки и бейджи */
+            .license-table td a,
+            .changes-table td a,
+            .uk-table td a,
+            .license-table td .badge,
+            .changes-table td .badge,
+            .uk-table td .badge {
+                max-width: 100%;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
+                display: inline-block;
             }
             
             /* Особые стили для кнопок действий в карточках */
             .license-table td:last-child,
             .changes-table td:last-child {
                 flex-direction: column;
-                align-items: flex-end;
+                align-items: stretch;
                 gap: 8px;
+                padding-top: 12px;
+                margin-top: 8px;
+                border-top: 1px dashed #e2e8f0;
             }
             
             .license-table td:last-child a,
             .changes-table td:last-child a {
                 width: 100%;
                 text-align: center;
+                display: block;
+                padding: 8px 12px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 13px;
+            }
+            
+            /* Перенос длинных слов и URL */
+            .license-table td,
+            .changes-table td,
+            .uk-table td {
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+            
+            /* Уменьшаем отступы для компактности */
+            .container {
+                padding: 16px;
             }
         }
 
-        /* Адаптивная панель управления */
+        /* Адаптивная панель управления - ОПТИМИЗИРОВАНО */
         @media (max-width: 640px) {
             .control-panel {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 12px;
+                gap: 10px;
                 padding: 12px;
             }
             
-            .control-panel > * {
+            .period-input-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 8px;
+            }
+            
+            .period-input-wrapper input {
+                min-width: auto;
                 width: 100%;
             }
             
-            .control-panel button,
-            .control-panel .btn-group {
+            .period-hint {
+                text-align: center;
+            }
+            
+            .status-filters {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .filter-btn {
+                flex: 1 1 auto;
+                text-align: center;
+                min-width: 80px;
+            }
+            
+            .search-select-wrapper {
+                min-width: auto;
                 width: 100%;
             }
             
             .btn-group {
-                display: flex;
-                flex-direction: column;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
                 gap: 8px;
+                width: 100%;
             }
             
             .btn-group button {
@@ -902,10 +988,11 @@
             }
         }
 
-        /* Адаптивный поиск и фильтры */
+        /* Адаптивный поиск и фильтры - ОПТИМИЗИРОВАНО */
         @media (max-width: 640px) {
             .search-container {
                 width: 100%;
+                min-width: auto;
             }
             
             .search-input-wrapper {
@@ -918,22 +1005,26 @@
             
             .filters-row {
                 flex-direction: column;
-                gap: 12px;
+                gap: 10px;
+                width: 100%;
             }
             
             .filter-group {
                 width: 100%;
+                min-width: auto;
             }
             
             .filter-group label {
                 display: block;
                 margin-bottom: 6px;
                 font-weight: 500;
+                font-size: 13px;
             }
             
             .filter-group select,
             .filter-group input {
                 width: 100%;
+                min-width: auto;
             }
         }
 
@@ -1021,32 +1112,39 @@
             }
         }
 
-        /* Адаптивные карточки статистики */
+        /* Адаптивные карточки статистики - ОПТИМИЗИРОВАНО */
         @media (max-width: 640px) {
             .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
             }
             
             .stat-card {
-                padding: 16px;
+                padding: 14px;
             }
             
             .stat-value {
-                font-size: 28px;
+                font-size: 24px;
             }
             
             .stat-label {
-                font-size: 13px;
+                font-size: 12px;
+            }
+        }
+        
+        /* Очень маленькие экраны - одна колонка статистики */
+        @media (max-width: 380px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
 
-        /* Адаптивная панель свежести данных */
+        /* Адаптивная панель свежести данных - ОПТИМИЗИРОВАНО */
         @media (max-width: 640px) {
             .data-freshness-bar {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 12px;
+                gap: 10px;
                 padding: 12px;
             }
             
