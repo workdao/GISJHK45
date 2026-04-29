@@ -1077,23 +1077,23 @@
     function getEntryTypeName(type){ return ENTRY_TYPES[type]?.name || `📄 ${type||'Прочее'}`; }
     function getEntryTypeBadge(type){ return ENTRY_TYPES[type]?.badge || 'badge-other'; }
 
-    // ========== ВЫПАДАЮЩИЙ СПИСОК С ПОИСКОМ ==========
+    // ========== ВЫПАДАЮЩИЙ СПИСОК С ПОИСКОМ ===========
     function updateSearchSelectDisplay() {
         const input = document.getElementById('searchSelectInput');
         if (selectedGuids.length === 1) {
             const license = allLicenses.find(l => l.guid === selectedGuids[0]);
             if (license) {
-                input.innerHTML = `✅ ${license.ukName} (${license.number})`;
+                input.textContent = `✅ ${license.ukName} (${license.number})`;
                 return;
             }
         } else if (selectedGuids.length === filteredLicenses.length && filteredLicenses.length > 0) {
-            input.innerHTML = `📋 Все УК (${selectedGuids.length})`;
+            input.textContent = `📋 Все УК (${selectedGuids.length})`;
             return;
         } else if (selectedGuids.length > 0) {
-            input.innerHTML = `📌 Выбрано: ${selectedGuids.length} лицензий`;
+            input.textContent = `📌 Выбрано: ${selectedGuids.length} лицензий`;
             return;
         }
-        input.innerHTML = `🔍 Выбрать УК или лицензию...`;
+        input.textContent = `🔍 Выбрать УК или лицензию...`;
     }
     
     function renderSearchSelectOptions(searchText = '') {
@@ -1136,12 +1136,12 @@
         filtered.forEach(license => {
             const isSelected = selectedGuids.includes(license.guid);
             const statusEmoji = license.status === 'ACTIVE' ? '✅' : (license.status === 'TERMINATED' ? '⏸️' : (license.status === 'EXPIRED' ? '⌛' : '❌'));
-            html += `<div class="search-select-option ${isSelected ? 'selected' : ''}" data-guid="${license.guid}" data-name="${license.ukName}">
-                        <div class="search-select-option-name">${statusEmoji} ${license.ukName}</div>
+            html += `<div class="search-select-option ${isSelected ? 'selected' : ''}" data-guid="${escapeHtml(license.guid)}" data-name="${escapeHtml(license.ukName)}">
+                        <div class="search-select-option-name">${statusEmoji} ${escapeHtml(license.ukName)}</div>
                         <div class="search-select-option-details">
-                            <span>📄 ${license.number}</span>
-                            <span>🆔 ${license.inn}</span>
-                            <span>${license.status}</span>
+                            <span>📄 ${escapeHtml(license.number)}</span>
+                            <span>🆔 ${escapeHtml(license.inn)}</span>
+                            <span>${escapeHtml(license.status)}</span>
                         </div>
                     </div>`;
         });
@@ -1449,11 +1449,11 @@
     
     function renderStatusFilters(){
         const cont=document.getElementById('statusFilters');
-        cont.innerHTML=`<button class="filter-btn all ${currentFilter==='ALL'?'active':''}" onclick="filterByStatus('ALL')">📊 ВСЕ (${licenseStats.total})</button>
-                        <button class="filter-btn active-filter ${currentFilter==='ACTIVE'?'active':''}" onclick="filterByStatus('ACTIVE')">✅ ACTIVE (${licenseStats.active})</button>
-                        ${licenseStats.terminated>0?`<button class="filter-btn terminated-filter ${currentFilter==='TERMINATED'?'active':''}" onclick="filterByStatus('TERMINATED')">⏸️ TERMINATED (${licenseStats.terminated})</button>`:''}
-                        ${licenseStats.expired>0?`<button class="filter-btn expired-filter ${currentFilter==='EXPIRED'?'active':''}" onclick="filterByStatus('EXPIRED')">⌛ EXPIRED (${licenseStats.expired})</button>`:''}
-                        ${licenseStats.canceled>0?`<button class="filter-btn canceled-filter ${currentFilter==='CANCELED'?'active':''}" onclick="filterByStatus('CANCELED')">❌ CANCELED (${licenseStats.canceled})</button>`:''}`;
+        cont.innerHTML=`<button class="filter-btn all ${currentFilter==='ALL'?'active':''}" onclick="filterByStatus('ALL')">📊 ВСЕ (${Number(licenseStats.total)})</button>
+                        <button class="filter-btn active-filter ${currentFilter==='ACTIVE'?'active':''}" onclick="filterByStatus('ACTIVE')">✅ ACTIVE (${Number(licenseStats.active)})</button>
+                        ${licenseStats.terminated>0?`<button class="filter-btn terminated-filter ${currentFilter==='TERMINATED'?'active':''}" onclick="filterByStatus('TERMINATED')">⏸️ TERMINATED (${Number(licenseStats.terminated)})</button>`:''}
+                        ${licenseStats.expired>0?`<button class="filter-btn expired-filter ${currentFilter==='EXPIRED'?'active':''}" onclick="filterByStatus('EXPIRED')">⌛ EXPIRED (${Number(licenseStats.expired)})</button>`:''}
+                        ${licenseStats.canceled>0?`<button class="filter-btn canceled-filter ${currentFilter==='CANCELED'?'active':''}" onclick="filterByStatus('CANCELED')">❌ CANCELED (${Number(licenseStats.canceled)})</button>`:''}`;
     }
     
     window.filterByStatus=function(status){
@@ -1689,7 +1689,7 @@
         // Формируем ссылку на запись в ГИС ЖКХ
         let gisLink = '';
         if (change.entryGuid && change.entryType) {
-            gisLink = `https://my.dom.gosuslugi.ru/#!/rls-public/license-entry-view/${change.entryType}/${change.entryGuid}`;
+            gisLink = `https://my.dom.gosuslugi.ru/#!/rls-public/license-entry-view/${encodeURIComponent(change.entryType)}/${encodeURIComponent(change.entryGuid)}`;
         }
         
         modalDiv.innerHTML = `
@@ -1780,7 +1780,7 @@
                     <tbody>`;
         
         processedData.forEach(item => {
-            const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${item.guid}/registry-entries`;
+            const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${encodeURIComponent(item.guid)}/registry-entries`;
             const houseCount = item.houseCount || 0;
             html += `<tr>
                         <td><a href="${escapeHtml(licenseUrl)}" target="_blank" rel="noopener noreferrer" class="license-link">🏢 ${escapeHtml(item.licenseeName)}</a></td>
@@ -1817,7 +1817,7 @@
                 <tbody>`;
         
         allRegionChanges.forEach((change, idx) => {
-            const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${change.licenseGuid}/registry-entries`;
+            const licenseUrl = `https://my.dom.gosuslugi.ru/#!/rls-public/license-view/${encodeURIComponent(change.licenseGuid)}/registry-entries`;
             html += `<tr class="clickable-row" data-change-index="${idx}" data-entry-type="${escapeHtml(change.entryType)}">
                         <td>${formatDate(change.publishDate)}</td>
                         <td>
